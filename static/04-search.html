@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <title>도서 검색</title>
+</head>
+<body>
+    <h1>도서 검색</h1>
+    <input id="keyword" type="text" placeholder="제목 키워드 입력">
+    <button id="searchBtn">검색</button>
+    <ul id="result"></ul>
+
+    <script>
+    document.getElementById("searchBtn").addEventListener("click", async () => {
+        const kw = document.getElementById("keyword").value;
+        const response = await fetch("/books/search?keyword=" + encodeURIComponent(kw));
+        const books = await response.json();
+        
+        const ul = document.getElementById("result");
+        ul.innerHTML = "";
+        
+        for (const b of books) {
+            const li = document.createElement("li");
+            li.textContent = b.title + " - " + b.author;
+            ul.appendChild(li);
+        }
+    });
+    </script>
+</body>
+</html>

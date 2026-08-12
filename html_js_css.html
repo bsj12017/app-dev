@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>이름입력창</title>
+</head>
+<body>
+    <div style="padding: 30px; font-size: 18px;">
+        이름 <input type="text" id="nameInput" style="font-size: 16px; padding: 4px; margin: 0 10px;">
+        <button onclick="showName()" style="font-size: 16px; padding: 5px 15px; cursor: pointer;">입력</button>
+        <p style="margin-top: 30px;">당신의 이름은 <span id="result" style="font-weight: bold; text-decoration: underline;">______</span> 입니다.</p>
+    </div>
+
+    <script>
+        function showName() {
+            const val = document.getElementById('nameInput').value;
+            document.getElementById('result').innerText = val ? val : '______';
+        }
+    </script>
+</body>
+</html>

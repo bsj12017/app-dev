@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head><meta charset="utf-8"><title>서버 상태</title></head>
+<body>
+  <h1>서버 상태</h1>
+  <p id="status">확인 중...</p>
+  <p id="info"></p>
+
+
+  <script>
+    async function load() {
+      const health = await (await fetch("/health")).json();
+      const info = await (await fetch("/info")).json();
+      document.getElementById("status").textContent = "상태: " + health.status;
+      document.getElementById("info").textContent = info.name + " v" + info.version;
+    }
+    load();
+  </script>
+</body>
+</html>
