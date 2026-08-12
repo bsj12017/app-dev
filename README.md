@@ -24,11 +24,11 @@ FastAPI와 순수 프론트엔드(HTML/JavaScript)를 활용해 만든 간단한
 ### 1. 프로젝트 폴더로 이동하기
 터미널을 열고 본인의 프로젝트 경로로 이동합니다.
 ```powershell
-cd C:\Users\Playdata\study\app-dev
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-pip install fastapi uvicorn
-.venv\Scripts\python.exe main.py
+-cd C:\Users\Playdata\study\app-dev
+-python -m venv .venv
+-.venv\Scripts\Activate.ps1
+-pip install fastapi uvicorn
+-.venv\Scripts\python.exe main.py
 
 5. 웹 브라우저에서 확인하기
 크롬이나 엣지 브라우저를 켜고 아래 주소로 접속합니다.
