@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <title>페이지네이션</title>
+</head>
+<body>
+    <h1>페이지네이션</h1>
+    <button id="prevBtn">이전</button>
+    <button id="nextBtn">다음</button>
+    <ul id="result"></ul>
+
+    <script>
+        let skip = 0;
+        const limit = 2;
+
+        async function render() {
+            if (skip < 0) skip = 0;
+            const response = await fetch(`/books/page?skip=${skip}&limit=${limit}`);
+            const books = await response.json();
+
+            if (!Array.isArray(books)) {
+                console.error("서버 응답이 배열이 아닙니다:", books);
+                return;
+            }
+
+            const ul = document.getElementById("result");
+            ul.innerHTML = "";
+
+            for (const b of books) {
+                const li = document.createElement("li");
+                li.textContent = b.id + ". " + b.title;
+                ul.appendChild(li);
+            }
+
+            // --- ✨ 여기서부터 심화 실습 조건 추가 ---
+            const nextBtn = document.getElementById("nextBtn");
+            const prevBtn = document.getElementById("prevBtn");
+
+            // 1. 다음 결과가 비어있으면 '다음' 버튼 비활성화
+            if (books.length === 0) {
+                nextBtn.disabled = true;
+            } else {
+                nextBtn.disabled = false;
+            }
+
+            // 2. 맨 처음(skip이 0 이하)이면 '이전' 버튼 비활성화 (센스 있는 추가 기능!)
+            if (skip === 0) {
+                prevBtn.disabled = true;
+            } else {
+                prevBtn.disabled = false;
+            }
+            // ------------------------------------------
+        }
+
+        document.getElementById("prevBtn").addEventListener("click", () => {
+            skip -= limit; 
+            render(); 
+        });
+
+        document.getElementById("nextBtn").addEventListener("click", () => {
+            skip += limit; 
+            render(); 
+        });
+
+        render();
+    </script>
+</body>
+</html>

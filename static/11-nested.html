@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>엔코아 스타일 · MLOps 도서 등록 시스템</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --primary: #38bdf8;
+            --primary-hover: #0ea5e9;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 40px 20px;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(14, 165, 233, 0.08) 0%, transparent 40%);
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(40px) scale(0.97);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .animate-on-scroll.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 650px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--primary);
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        p.desc {
+            color: var(--text-sub);
+            font-size: 15px;
+            margin-bottom: 30px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (min-width: 480px) {
+            .form-grid.dual {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .input-box {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 13px;
+            color: var(--text-sub);
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        input::placeholder {
+            color: #475569;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+            background: rgba(15, 23, 42, 0.9);
+        }
+
+        .submit-btn {
+            margin-top: 10px;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+            color: #0f172a;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px -5px rgba(56, 189, 248, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(56, 189, 248, 0.6);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        pre {
+            margin-top: 20px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border-color);
+            color: #38bdf8;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-family: 'Courier New', Courier, monospace;
+            max-height: 160px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <div class="card animate-on-scroll">
+            <div class="badge animate-on-scroll" style="transition-delay: 0.1s;">AI Ready Pipeline</div>
+            <h1 class="animate-on-scroll" style="transition-delay: 0.2s;">도서 데이터 인프라 등록</h1>
+            <p class="desc animate-on-scroll" style="transition-delay: 0.3s;">메타데이터 및 출판사 정보를 파이프라인에 안전하게 적재합니다.</p>
+
+            <div class="form-grid animate-on-scroll" style="transition-delay: 0.4s; display: flex; flex-direction: column; gap: 16px;">
+                <div class="input-box">
+                    <label>도서 제목</label>
+                    <input type="text" id="title" placeholder="예: 파이썬 입문">
+                </div>
+                
+                <div class="form-grid dual">
+                    <div class="input-box">
+                        <label>저자명</label>
+                        <input type="text" id="author" placeholder="예: 김철수">
+                    </div>
+                    <div class="input-box">
+                        <label>출판 연도</label>
+                        <input type="number" id="year" placeholder="예: 2026">
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label>태그 (콤마로 구분)</label>
+                    <input type="text" id="tags" placeholder="Python, FastAPI, Backend">
+                </div>
+
+                <div class="form-grid dual">
+                    <div class="input-box">
+                        <label>출판사 이름 (선택)</label>
+                        <input type="text" id="pubName" placeholder="예: 엔코아출판">
+                    </div>
+                    <div class="input-box">
+                        <label>출판사 도시 (선택)</label>
+                        <input type="text" id="pubCity" placeholder="예: 서울">
+                    </div>
+                </div>
+
+                <button class="submit-btn" id="saveBtn">파이프라인 등록 실행</button>
+            </div>
+
+            <pre id="result" class="animate-on-scroll" style="transition-delay: 0.5s;">[System] 대기 중...</pre>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("saveBtn").addEventListener("click", async () => {
+            const tagText = document.getElementById("tags").value;
+            const pubName = document.getElementById("pubName").value;
+            const pubCity = document.getElementById("pubCity").value;
+
+            const payload = {
+                title: document.getElementById("title").value,
+                author: document.getElementById("author").value,
+                year: Number(document.getElementById("year").value),
+                tags: tagText ? tagText.split(",").map(t => t.trim()) : []
+            };
+
+            if (pubName) {
+                payload.publisher = { name: pubName };
+                if (pubCity) payload.publisher.city = pubCity;
+            }
+
+            try {
+                const res = await fetch("/books", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                document.getElementById("result").textContent = `[Status: ${res.status}]\n` + JSON.stringify(data, null, 2);
+            } catch (err) {
+                document.getElementById("result").textContent = "[Error] 서버 통신 실패";
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const targets = document.querySelectorAll(".animate-on-scroll");
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("active");
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            targets.forEach(target => {
+                observer.observe(target);
+            });
+        });
+    </script>
+
+</body>
+</html>

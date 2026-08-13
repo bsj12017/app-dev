@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>도서 관리 API 실습</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 50px 20px;
+
+      overflow-x: hidden;
+
+      color: white;
+
+      font-family:
+        Pretendard,
+        "Noto Sans KR",
+        Arial,
+        sans-serif;
+
+      /* 고래가 없는 하늘 배경 */
+      background:
+        #100d38
+        url("./whale-sky-bg.png")
+        center / cover
+        no-repeat
+        fixed;
+    }
+
+    /* 글씨가 잘 보이게 하는 어두운 필터 */
+    body::before {
+      content: "";
+
+      position: fixed;
+      inset: 0;
+
+      z-index: 0;
+
+      background: linear-gradient(
+        90deg,
+        rgba(7, 6, 35, 0.82),
+        rgba(28, 15, 70, 0.3),
+        rgba(40, 15, 65, 0.12)
+      );
+
+      pointer-events: none;
+    }
+
+    /* 움직이는 고래 전체 영역 */
+    .whale-layer {
+      position: fixed;
+
+      top: 7vh;
+      left: 0;
+
+      z-index: 1;
+
+      width: clamp(620px, 62vw, 1100px);
+
+      pointer-events: none;
+
+      filter: drop-shadow(
+        0 0 35px rgba(173, 154, 255, 0.6)
+      );
+
+      animation: swimAcross 38s linear infinite;
+      animation-delay: -13s;
+
+      will-change: transform;
+    }
+
+    /* 고래의 위아래 움직임 */
+    .whale {
+      display: block;
+
+      width: 100%;
+
+      animation:
+        whaleFloat 5.5s ease-in-out infinite alternate;
+
+      will-change: transform;
+    }
+
+    /* 오른쪽에서 왼쪽으로 헤엄치기 */
+    @keyframes swimAcross {
+      0% {
+        transform:
+          translate3d(110vw, 4vh, 0)
+          rotate(-3deg)
+          scale(0.78);
+      }
+
+      30% {
+        transform:
+          translate3d(65vw, -1vh, 0)
+          rotate(1deg)
+          scale(0.88);
+      }
+
+      65% {
+        transform:
+          translate3d(18vw, 3vh, 0)
+          rotate(-1deg)
+          scale(1);
+      }
+
+      100% {
+        transform:
+          translate3d(-75vw, -2vh, 0)
+          rotate(2deg)
+          scale(0.82);
+      }
+    }
+
+    /* 물속을 유영하는 듯한 움직임 */
+    @keyframes whaleFloat {
+      from {
+        transform:
+          translateY(-12px)
+          rotate(-0.8deg);
+      }
+
+      to {
+        transform:
+          translateY(20px)
+          rotate(0.8deg);
+      }
+    }
+
+    .container {
+      position: relative;
+
+      z-index: 2;
+
+      width: 100%;
+      max-width: 760px;
+
+      margin: 0 auto;
+    }
+
+    .card {
+      padding: 40px;
+
+      border:
+        1px solid
+        rgba(229, 214, 255, 0.3);
+
+      border-radius: 30px;
+
+      background: rgba(18, 13, 58, 0.7);
+
+      box-shadow:
+        0 25px 80px rgba(6, 4, 35, 0.58),
+        inset 0 1px 0 rgba(255, 255, 255, 0.13);
+
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .subtitle {
+      margin: 0 0 9px;
+
+      color: #9deaff;
+
+      font-size: 12px;
+      font-weight: 800;
+
+      letter-spacing: 4px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+
+      font-size: clamp(32px, 6vw, 46px);
+
+      letter-spacing: -2px;
+    }
+
+    .description {
+      margin: 0 0 34px;
+
+      color: rgba(255, 255, 255, 0.68);
+
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    h2 {
+      margin: 30px 0 14px;
+
+      color: #e8ddff;
+
+      font-size: 21px;
+    }
+
+    h2:first-of-type {
+      margin-top: 0;
+    }
+
+    ul {
+      display: grid;
+
+      gap: 10px;
+
+      margin: 0;
+      padding: 0;
+
+      list-style: none;
+    }
+
+    li a {
+      display: flex;
+      align-items: center;
+
+      min-height: 50px;
+
+      padding: 0 17px;
+
+      border:
+        1px solid
+        rgba(211, 194, 255, 0.2);
+
+      border-radius: 14px;
+
+      color: rgba(255, 255, 255, 0.88);
+      background: rgba(9, 7, 40, 0.5);
+
+      text-decoration: none;
+
+      transition:
+        transform 0.2s,
+        border-color 0.2s,
+        background 0.2s,
+        box-shadow 0.2s;
+    }
+
+    li a:hover {
+      transform: translateX(5px);
+
+      border-color: #9deaff;
+
+      color: white;
+
+      background: rgba(77, 52, 135, 0.65);
+
+      box-shadow:
+        0 8px 22px rgba(156, 142, 255, 0.2);
+    }
+
+    .docs-link {
+      margin: 28px 0 0;
+    }
+
+    .docs-link a {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      min-height: 54px;
+
+      padding: 0 20px;
+
+      border-radius: 14px;
+
+      color: #18113f;
+
+      background: linear-gradient(
+        135deg,
+        #8beaff,
+        #b9a7ff 52%,
+        #f3a7dc
+      );
+
+      box-shadow:
+        0 12px 30px
+        rgba(181, 156, 255, 0.32);
+
+      text-decoration: none;
+      font-weight: 800;
+
+      transition:
+        transform 0.2s,
+        filter 0.2s,
+        box-shadow 0.2s;
+    }
+
+    .docs-link a:hover {
+      transform: translateY(-2px);
+
+      filter: brightness(1.08);
+
+      box-shadow:
+        0 16px 36px
+        rgba(181, 156, 255, 0.45);
+    }
+
+    @media (max-width: 650px) {
+      body {
+        padding: 140px 12px 25px;
+
+        background-position: center;
+        background-attachment: scroll;
+      }
+
+      .whale-layer {
+        top: 2vh;
+
+        width: 115vw;
+      }
+
+      .card {
+        padding: 27px 20px;
+
+        border-radius: 24px;
+      }
+
+      h2 {
+        font-size: 19px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 이 고래 이미지만 따로 움직입니다 -->
+  <div class="whale-layer" aria-hidden="true">
+    <img
+      class="whale"
+      src="./flying-whale-transparent.png"
+      alt=""
+    >
+  </div>
+
+  <main class="container">
+    <section class="card">
+      <p class="subtitle">
+        STARRY WHALE LIBRARY
+      </p>
+
+      <h1>도서 관리 API 실습</h1>
+
+      <p class="description">
+        원하는 실습 항목을 선택해 주세요.
+      </p>
+
+      <h2>1일 차 — 조회</h2>
+
+      <ul>
+        <li>
+          <a href="01-status.html">
+            1. 서버 상태
+          </a>
+        </li>
+
+        <li>
+          <a href="02-list.html">
+            2. 도서 목록
+          </a>
+        </li>
+
+        <li>
+          <a href="03-detail.html">
+            3. 단건 조회
+          </a>
+        </li>
+
+        <li>
+          <a href="04-search.html">
+            4. 제목 검색
+          </a>
+        </li>
+
+        <li>
+          <a href="05-filter.html">
+            5. 저자 필터·정렬
+          </a>
+        </li>
+
+        <li>
+          <a href="06-page.html">
+            6. 페이지네이션
+          </a>
+        </li>
+      </ul>
+
+      <h2>2일 차 — 등록과 검증</h2>
+
+      <ul>
+        <li>
+          <a href="07-create.html">
+            7. 도서 등록 폼
+          </a>
+        </li>
+
+        <li>
+          <a href="08-validate.html">
+            8. 검증 오류 표시
+          </a>
+        </li>
+
+        <li>
+          <a href="09-create-list.html">
+            9. 등록 후 목록 갱신
+          </a>
+        </li>
+
+        <li>
+          <a href="10-detail-404.html">
+            10. 404 구분 처리
+          </a>
+        </li>
+
+        <li>
+          <a href="11-nested.html">
+            11. 태그·출판사 입력
+          </a>
+        </li>
+
+        <li>
+          <a href="12-final.html">
+            12. 상태 코드 통합 처리
+          </a>
+        </li>
+      </ul>
+
+      <p class="docs-link">
+        <a href="/docs">
+          API 자동 문서 (Swagger UI) 열기
+        </a>
+      </p>
+    </section>
+  </main>
+</body>
+</html>

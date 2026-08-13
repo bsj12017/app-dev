@@ -6,26 +6,49 @@
 </head>
 <body>
     <h1>도서 단건 조회</h1>
+    <input type="number" id="bookIdInput" placeholder="도서 번호 입력">
+    <button onclick="loadBook()">조회</button>
     
-    <input id="bookId" type="number" placeholder="도서 번호 입력">
-    <button id="findBtn">조회</button>
-    
-    <p id="result"></p>
+    <!-- 결과를 보여줄 영역 -->
+    <div id="result"></div>
 
     <script>
-    document.getElementById("findBtn").addEventListener("click", async () => {
-        const bookId = document.getElementById("bookId").value;
-        const response = await fetch(`/books/${bookId}`);
-        
-        const resultP = document.getElementById("result");
-        
-        if (response.ok) {
-            const b = await response.json();
-            resultP.textContent = `${b.id}. ${b.title} - ${b.author} (${b.year})`;
-        } else {
-            resultP.textContent = "해당 도서를 찾을 수 없습니다.";
+        async function loadBook() {
+            const id = document.getElementById("bookIdInput").value;
+            const resultDiv = document.getElementById("result");
+            
+            if (!id) {
+                alert("도서 번호를 입력해주세요!");
+                return;
+            }
+
+            const response = await fetch(`/books/${id}`);
+            const book = await response.json();
+
+            // 에러가 나거나 책을 찾지 못한 경우
+            if (book.error || !book.title) {
+                resultDiv.innerHTML = "<p style='color: red;'>검색 결과가 없습니다.</p>";
+                return;
+            }
+
+            // 정상적으로 찾은 경우
+            resultDiv.innerHTML = `
+                <p><strong>번호:</strong> ${book.id}</p>
+                <p><strong>제목:</strong> ${book.title}</p>
+                <p><strong>저자:</strong> ${book.author}</p>
+                <p><strong>출판년도:</strong> ${book.year}</p>
+            `;
         }
-    });
+
+        // URL 쿼리스트링(?id=숫자)으로 바로 넘어온 경우 자동 조회
+        window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const idParam = urlParams.get("id");
+            if (idParam) {
+                document.getElementById("bookIdInput").value = idParam;
+                loadBook();
+            }
+        };
     </script>
 </body>
 </html>

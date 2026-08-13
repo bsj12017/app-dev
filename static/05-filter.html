@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>도서 필터·정렬</title>
+  </head>
+  <body>
+    <h1>저자 필터·정렬</h1>
+    
+    <!-- 1. id를 author로 설정 -->
+    <input id="author" type="text" placeholder="저자 이름" />
+    
+    <!-- 2. id를 sort로 설정 -->
+    <select id="sort">
+      <option value="">정렬 안 함</option>
+      <option value="year">연도순</option>
+    </select>
+    
+    <!-- 3. id를 filterBtn으로 설정 -->
+    <button id="filterBtn">적용</button>
+    
+    <ul id="result"></ul>
+
+    <script>
+      document.getElementById("filterBtn").addEventListener("click", async () => {
+        const author = document.getElementById("author").value;
+        const sort = document.getElementById("sort").value;
+
+        // 백엔드(main.py)로 요청을 보낼 주소 조합
+        const url = `/books/filter?author=${encodeURIComponent(author)}&sort=${sort}`;
+        
+        const response = await fetch(url);
+        const books = await response.json();
+
+        const ul = document.getElementById("result");
+        ul.innerHTML = "";
+
+        for (const b of books) {
+          const li = document.createElement("li");
+          li.textContent = b.title + " - " + b.author + " (" + b.year + ")";
+          ul.appendChild(li);
+        }
+      });
+    </script>
+  </body>
+</html>

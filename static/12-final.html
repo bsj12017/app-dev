@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>도서 등록 최종</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
+
+  color: white;
+  font-family: Pretendard, "Noto Sans KR", Arial, sans-serif;
+  background: #100d38;
+}
+
+/* 움직이는 고래 배경 */
+body::before {
+  content: "";
+  position: fixed;
+  top: -6%;
+  left: -6%;
+  width: 112%;
+  height: 112%;
+  z-index: -2;
+
+  background:
+    url("./flying-whale-bg.png")
+    center / cover no-repeat;
+
+  animation: whaleSwimming 16s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* 글씨가 잘 보이도록 어두운 필터 */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+
+  background: linear-gradient(
+    90deg,
+    rgba(8, 6, 38, 0.78),
+    rgba(22, 13, 66, 0.25),
+    rgba(39, 15, 64, 0.08)
+  );
+
+  pointer-events: none;
+}
+
+/* 천천히 유영하는 움직임 */
+@keyframes whaleSwimming {
+  0% {
+    transform:
+      translate3d(-2%, 1%, 0)
+      scale(1.04)
+      rotate(-0.4deg);
+  }
+
+  50% {
+    transform:
+      translate3d(1%, -1.5%, 0)
+      scale(1.08)
+      rotate(0.3deg);
+  }
+
+  100% {
+    transform:
+      translate3d(3%, 1%, 0)
+      scale(1.05)
+      rotate(-0.2deg);
+  }
+}
+
+    .container {
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 460px;
+      padding: 34px;
+      border: 1px solid rgba(230, 218, 255, 0.3);
+      border-radius: 28px;
+
+      background: rgba(19, 14, 61, 0.65);
+
+      box-shadow:
+        0 25px 70px rgba(7, 4, 35, 0.55),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .subtitle {
+      margin: 0 0 8px;
+      color: #9deaff;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 4px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 39px;
+      letter-spacing: -2px;
+    }
+
+    .description {
+      margin: 0 0 26px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .form-group {
+      display: grid;
+      gap: 12px;
+    }
+
+    input {
+      width: 100%;
+      height: 52px;
+      padding: 0 17px;
+
+      border: 1px solid rgba(211, 194, 255, 0.25);
+      border-radius: 14px;
+      outline: none;
+
+      color: #fff;
+      background: rgba(8, 6, 39, 0.55);
+
+      font-size: 15px;
+
+      transition:
+        border-color 0.2s,
+        box-shadow 0.2s,
+        transform 0.2s;
+    }
+
+    input::placeholder {
+      color: rgba(240, 232, 255, 0.55);
+    }
+
+    input:focus {
+      border-color: #95eaff;
+
+      box-shadow:
+        0 0 0 4px rgba(149, 234, 255, 0.12),
+        0 0 24px rgba(186, 155, 255, 0.16);
+
+      transform: translateY(-1px);
+    }
+
+    button {
+      width: 100%;
+      height: 54px;
+      margin-top: 16px;
+
+      border: none;
+      border-radius: 14px;
+
+      color: #18113f;
+      background: linear-gradient(
+        135deg,
+        #8beaff,
+        #b9a7ff 52%,
+        #f3a7dc
+      );
+
+      box-shadow: 0 12px 30px rgba(181, 156, 255, 0.3);
+
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 800;
+
+      transition:
+        transform 0.2s,
+        box-shadow 0.2s,
+        filter 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+      box-shadow: 0 16px 35px rgba(181, 156, 255, 0.45);
+    }
+
+    #msg {
+      min-height: 22px;
+      margin: 15px 3px 6px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    #list {
+      max-height: 220px;
+      margin: 6px 0 0;
+      padding: 0;
+
+      overflow-y: auto;
+      list-style: none;
+    }
+
+    #list li {
+      padding: 13px 5px;
+
+      border-bottom: 1px solid rgba(225, 211, 255, 0.15);
+
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 14px;
+    }
+
+    @media (max-width: 650px) {
+      body {
+        align-items: flex-end;
+        padding: 100px 12px 20px;
+        background-position: 62% center;
+        background-attachment: scroll;
+      }
+
+      .card {
+        max-width: none;
+        padding: 26px 20px;
+        border-radius: 23px;
+      }
+
+      h1 {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <section class="card">
+      <p class="subtitle">STARRY WHALE LIBRARY</p>
+
+      <h1>도서 등록</h1>
+
+      <p class="description">
+        별빛 사이를 유영하는 고래처럼,<br>
+        기억하고 싶은 책을 기록해 보세요.
+      </p>
+
+      <div class="form-group">
+        <input
+          id="title"
+          type="text"
+          placeholder="제목"
+        >
+
+        <input
+          id="author"
+          type="text"
+          placeholder="저자"
+        >
+
+        <input
+          id="year"
+          type="number"
+          placeholder="연도"
+        >
+      </div>
+
+      <button id="saveBtn">도서 등록</button>
+
+      <p id="msg"></p>
+      <ul id="list"></ul>
+    </section>
+  </main>
+
+  <script>
+    async function loadList() {
+      const response = await fetch("/books");
+      const books = await response.json();
+      const ul = document.getElementById("list");
+
+      ul.innerHTML = "";
+
+      for (const book of books) {
+        const li = document.createElement("li");
+
+        li.textContent =
+          `${book.id}. ${book.title} - ${book.author}`;
+
+        ul.appendChild(li);
+      }
+    }
+
+    function showMessage(text, isError) {
+      const msg = document.getElementById("msg");
+
+      msg.textContent = text;
+      msg.style.color = isError
+        ? "#ffb5d2"
+        : "#9df2ff";
+    }
+
+    document
+      .getElementById("saveBtn")
+      .addEventListener("click", async () => {
+        const payload = {
+          title: document.getElementById("title").value,
+          author: document.getElementById("author").value,
+          year: Number(
+            document.getElementById("year").value
+          )
+        };
+
+        const res = await fetch("/books", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (res.status === 201) {
+          showMessage(
+            `등록 완료: ${data.title}`,
+            false
+          );
+
+          document.getElementById("title").value = "";
+          document.getElementById("author").value = "";
+          document.getElementById("year").value = "";
+
+          loadList();
+        } else if (res.status === 409) {
+          showMessage(
+            `중복: ${data.detail}`,
+            true
+          );
+        } else if (res.status === 422) {
+          const messages = data.detail.map(
+            error =>
+              `${error.loc.join(".")} ${error.msg}`
+          );
+
+          showMessage(
+            `입력 오류: ${messages.join(" / ")}`,
+            true
+          );
+        } else {
+          showMessage(
+            `알 수 없는 오류 (상태 ${res.status})`,
+            true
+          );
+        }
+      });
+
+    loadList();
+  </script>
+</body>
+</html>

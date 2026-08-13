@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <title>등록과 목록</title>
+</head>
+<body>
+    <h1>등록 후 목록 갱신</h1>
+    
+    <input id="title" placeholder="제목">
+    <input id="author" placeholder="저자">
+    <input id="year" type="number" placeholder="연도">
+    <button id="saveBtn">등록</button>
+    
+    <p id="msg"></p>
+    <ul id="list"></ul>
+
+    <script>
+        async function loadList() {
+            const books = await (await fetch("/books")).json();
+            const ul = document.getElementById("list");
+            ul.innerHTML = "";
+            
+            for (const b of books) {
+                const li = document.createElement("li");
+                li.textContent = b.id + ". " + b.title + " - " + b.author + " (" + b.year + ")";
+                ul.appendChild(li);
+            }
+        }
+
+        document.getElementById("saveBtn").addEventListener("click", async () => {
+            const payload = {
+                title: document.getElementById("title").value,
+                author: document.getElementById("author").value,
+                year: Number(document.getElementById("year").value)
+            };
+
+            const res = await fetch("/books", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            document.getElementById("msg").textContent = "상태 코드: " + res.status;
+
+            if (res.status === 201) {
+                loadList();
+            }
+        });
+
+        loadList();
+    </script>
+</body>
+</html>

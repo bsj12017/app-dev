@@ -1,139 +1,53 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="utf-8">
-    <title>도서 목록 - 네이버 스타일</title>
-    <style>
-        /* 네이버 스타일 기본 설정 */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-            background-color: #f5f6f7;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* 컨테이너 */
-        .container {
-            width: 100%;
-            max-width: 800px;
-            margin-top: 30px;
-            background-color: white;
-            padding: 20px 30px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            border-radius: 8px;
-        }
-
-        h1 {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 20px;
-            border-left: 4px solid #03c75a; /* 네이버 그린 포인트 */
-            padding-left: 10px;
-        }
-
-        /* 네이버 스타일 버튼 */
-        #loadBtn {
-            background-color: #03c75a;
-            border: none;
-            color: white;
-            padding: 10px 24px;
-            font-size: 14px;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-bottom: 20px;
-            transition: background-color 0.2s;
-        }
-
-        #loadBtn:hover {
-            background-color: #02b350;
-        }
-
-        /* 네이버 스타일 표 */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 14px;
-            color: #555;
-        }
-
-        th {
-            background-color: #f8f9fa;
-            color: #333;
-            font-weight: bold;
-            text-align: left;
-            padding: 12px 15px;
-            border-bottom: 2px solid #e5e5e5;
-        }
-
-        td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e5e5e5;
-        }
-
-        /* 행에 마우스를 올렸을 때 효과 */
-        tbody tr:hover {
-            background-color: #f1f3f5;
-        }
-
-        /* 특정 열 너비 조정 */
-        th:nth-child(1), td:nth-child(1) { width: 10%; text-align: center; } /* 번호 */
-        th:nth-child(4), td:nth-child(4) { width: 15%; text-align: center; } /* 출판년도 */
-    </style>
+    <meta charset="UTF-8">
+    <title>도서 목록</title>
 </head>
 <body>
-    
-    <div class="container">
-        <h1>도서 목록</h1>
-        <button id="loadBtn">목록 불러오기</button>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th>번호</th>
-                    <th>도서명</th>
-                    <th>저자</th>
-                    <th>출판년도</th>
-                </tr>
-            </thead>
-            <tbody id="result">
-                <tr>
-                    <td colspan="4" style="text-align: center; color: #999;">'불러오기' 버튼을 누르세요.</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <h1>도서 목록</h1>
+    <button id="loadBtn">목록 불러오기</button>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>번호</th>
+                <th>도서명</th>
+                <th>저자</th>
+                <th>출판연도</th>
+                <th>관리</th>
+            </tr>
+        </thead>
+        <tbody id="bookTableBody">
+            <!-- 자바스크립트가 여기에 목록을 채워넣습니다 -->
+        </tbody>
+    </table>
 
     <script>
-    document.getElementById("loadBtn").addEventListener("click", async () => {
-        const tbody = document.getElementById("result");
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;"><div class="spinner">불러오는 중...</div></td></tr>'; // 로딩 표시
+        // 버튼을 누르면 작동하는 코드
+        document.getElementById('loadBtn').addEventListener('click', async () => {
+            try {
+                // FastAPI의 /books 주소로 데이터 요청
+                const response = await fetch('/books');
+                const books = await response.json();
 
-        try {
-            const response = await fetch("/books");
-            const books = await response.json();
-            
-            tbody.innerHTML = ""; // 로딩 표시 제거
-            
-            for (const b of books) {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${b.id}</td>
-                    <td style="font-weight: 500; color: #222;">${b.title}</td>
-                    <td>${b.author}</td>
-                    <td>${b.year}</td>
-                `;
-                tbody.appendChild(tr);
+                const tbody = document.getElementById('bookTableBody');
+                tbody.innerHTML = ''; // 기존 내용 초기화
+
+                // 받아온 책 목록을 반복문으로 화면에 그려줌
+                books.forEach(book => {
+                    const row = `<tr>
+                        <td>${book.id}</td>
+                        <td>${book.title}</td>
+                        <td>${book.author}</td>
+                        <td>${book.year}</td>
+                        <td>-</td>
+                    </tr>`;
+                    tbody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error("데이터를 불러오는 중 에러 발생:", error);
             }
-        } catch (error) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: red;">데이터를 불러오는데 실패했습니다.</td></tr>';
-            console.error('Error:', error);
-        }
-    });
+        });
     </script>
 </body>
 </html>

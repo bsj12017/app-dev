@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>책 등록하기</title>
+</head>
+<body>
+    <h1>새로운 책 등록</h1>
+    <form id="bookForm">
+        <label>제목: <input type="text" id="title" required></label><br><br>
+        <label>저자: <input type="text" id="author" required></label><br><br>
+        <label>출판연도: <input type="number" id="year" required></label><br><br>
+        <button type="submit">등록하기</button>
+    </form>
+
+    <h3 id="result"></h3>
+
+    <script>
+        document.getElementById('bookForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const data = {
+                title: document.getElementById('title').value,
+                author: document.getElementById('author').value,
+                year: parseInt(document.getElementById('year').value)
+            };
+
+            const response = await fetch('/books', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            document.getElementById('result').innerText = "등록 성공 결과: " + JSON.stringify(result);
+        });
+    </script>
+</body>
+</html>
